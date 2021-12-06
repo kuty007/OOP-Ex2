@@ -20,16 +20,20 @@ public class DWGraph implements DirectedWeightedGraph {
 
     @Override
     public NodeData getNode(int key) {
-        return null;
+        return this.nodes.get(key);
     }
 
     @Override
     public EdgeData getEdge(int src, int dest) {
+        if (this.nodes.containsKey(src) && this.nodes.containsKey(dest)) {//if we have this 2 nodes go to the edges HashMap and return the value there
+            return this.edges.get(src).get(dest);
+        }
         return null;
     }
 
     @Override
     public void addNode(NodeData n) {
+
 
     }
 
