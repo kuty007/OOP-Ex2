@@ -9,12 +9,12 @@ public class geoLo implements GeoLocation {
         this.z = z;
     }
 
-        public geoLo(GeoLocation other){
-            this.x = other.x();
-            this.y = other.y();
-            this.z = other.z();
+    public geoLo(GeoLocation other) {
+        this.x = other.x();
+        this.y = other.y();
+        this.z = other.z();
 
-        }
+    }
 
 
     @Override
@@ -40,9 +40,11 @@ public class geoLo implements GeoLocation {
         z_dis = Math.pow((g.z() - this.z), 2);
         return Math.sqrt(x_dis + y_dis + z_dis);
     }
+
     public String toString() {
-        return  +this.x + ", " + this.y + ", " + this.z;
+        return this.x + ", " + this.y + ", " + this.z;
     }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

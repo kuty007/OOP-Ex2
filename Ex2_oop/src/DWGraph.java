@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -7,16 +8,24 @@ public class DWGraph implements DirectedWeightedGraph {
     private HashMap<Integer, HashMap<Integer, EdgeData>> edges;
     private int numOfNodes;
     private int numOfEdges;
-    private int modeCounter;
+    private int changes;
 
     public DWGraph() {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
         this.numOfEdges = 0;
         this.numOfNodes = 0;
-        this.modeCounter = 0;
+        this.changes = 0;
 
-}
+
+    }
+
+    public DWGraph(DirectedWeightedGraph other) {
+        this.nodes = new HashMap<>();
+        this.edges = new HashMap<>();
+        this.numOfEdges = other.edgeSize();
+        this.numOfNodes = other.nodeSize();
+    }
 
     @Override
     public NodeData getNode(int key) {
@@ -33,14 +42,37 @@ public class DWGraph implements DirectedWeightedGraph {
 
     @Override
     public void addNode(NodeData n) {
-
-
+        if (nodes.containsKey(n.getKey())) {
+            return;
+        }
+        nodes.put(n.getKey(), n);
+        edges.put(n.getKey(), new HashMap<>());
+        changes++;
+        numOfNodes++;
     }
+
 
     @Override
     public void connect(int src, int dest, double w) {
+        if (w < 0) {
+            throw new RuntimeException("The weight cant be negative!");
+        }
+        if (src == dest) {
+            return;
+        }
 
+        if (this.getEdge(src, dest) != null && edges.get(src).get(dest).getWeight() != w) {
+            EdgeData e = new edge(src, dest, w);
+            edges.get(src).put(dest, e);
+            changes++;
+        } else if (nodes.containsKey(src) && nodes.containsKey(dest) && this.getEdge(src, dest) == null) {
+            EdgeData e = new edge(src, dest, w);
+            edges.get(src).put(dest, e);
+            changes++;
+            numOfEdges++;
+        }
     }
+
 
     @Override
     public Iterator<NodeData> nodeIter() {
@@ -59,26 +91,51 @@ public class DWGraph implements DirectedWeightedGraph {
 
     @Override
     public NodeData removeNode(int key) {
-        return null;
+        if (!this.nodes.containsKey(key)) {
+            return null;
+        }
+        int size = edges.get(key).size();
+        edges.remove(key);
+        numOfEdges -= size;
+        changes += size;
+        Collection<Integer> c = edges.keySet();
+        for (int i : c) {
+            if (edges.get(i).containsKey(key)) {
+                edges.get(i).remove(key);
+                changes++;
+                numOfEdges--;
+            }
+        }
+        NodeData n = nodes.remove(key);
+        if (n != null) {
+            numOfNodes--;
+            changes++;
+        }
+        return n;
     }
+
 
     @Override
     public EdgeData removeEdge(int src, int dest) {
-        return null;
+        EdgeData e = edges.get(src).remove(dest);
+        if (e != null) {
+            numOfEdges--;
+        }
+        return e;
     }
 
     @Override
     public int nodeSize() {
-        return 0;
+        return this.numOfNodes;
     }
 
     @Override
     public int edgeSize() {
-        return 0;
+        return this.numOfEdges;
     }
 
     @Override
     public int getMC() {
-        return 0;
+        return this.changes;
     }
 }
