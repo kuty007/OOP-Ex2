@@ -1,3 +1,11 @@
+import java.util.List;
+
+import com.google.gson.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.*;
 import java.util.*;
 
 public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
@@ -50,7 +58,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         resetInfo();
         resetTag();
         resetWeight();
-        double d = Dijkstra((Node_Data)this.graph.getNode(src), (Node_Data)this.graph.getNode(dest));
+        double d = Dijkstra((Node_Data) this.graph.getNode(src), (Node_Data) this.graph.getNode(dest));
         resetInfo();
         resetTag();
         resetWeight();
@@ -58,12 +66,11 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             return -1;
         }
         return d;
-
     }
 
     @Override
-    public List<Node_Data> shortestPath(int src, int dest) {
-        List<Node_Data> list = new LinkedList<>();
+    public List<NodeData> shortestPath(int src, int dest) {
+        List<NodeData> list = new LinkedList<>();
         if (this.graph.getNode(src) == null) {
             throw new RuntimeException("This graph does not contain key " + src);
         }
@@ -74,7 +81,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             return null;
         }
         if (src == dest) {
-            list.add((Node_Data) this.graph.getNode(dest));
+            list.add(this.graph.getNode(dest));
             return list;
         }
         Dijkstra((Node_Data) this.graph.getNode(src), (Node_Data) this.graph.getNode(dest));
@@ -99,25 +106,106 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public NodeData center() {
-        if (isConnected() == false) {
+        if (!isConnected()) {
             return null;
         }
-
-
+        HashMap<NodeData, Double> centerNode = new HashMap<>();
+        for (int i = 0; i < graph.nodeSize(); i++) {
+            Double max = Double.MIN_VALUE;
+            for (int j = 0; j < graph.nodeSize(); j++) {
+                if(i!=j){
+                    Double maxDis = shortestPathDist(i,j);
+                    if (maxDis>max){
+                        max =maxDis;
+                    }
+                }
+            }
+            centerNode.put(graph.getNode(i),max);
+        }
+        return Collections.min(centerNode .entrySet(), Map.Entry.comparingByValue()).getKey();
     }
+
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         return null;
     }
 
     @Override
-    public boolean save(String file) {
-        return false;
+    public boolean save(String file) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+        JSONObject node;
+        JSONObject edge;
+        JSONArray nodes = new JSONArray();
+        JSONArray edges = new JSONArray();
+        for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
+            Node_Data n = (Node_Data) it.next();
+            node = new JSONObject();
+            node.put("pos", n.getLocation());
+            node.put("id", n.getKey());
+            node.put("weight", n.getWeight());
+            nodes.put(node);
+            for (Iterator<EdgeData> iter = this.graph.edgeIter(n.getKey()); iter.hasNext(); ) {
+                edge e = (edge) iter.next();
+                edge = new JSONObject();
+                edge.put("src", e.getSrc());
+                edge.put("w", e.getWeight());
+                edge.put("dest", e.getDest());
+                edges.put(edge);
+            }
+        }
+        jsonObject.put("Nodes", nodes);
+        jsonObject.put("Edges", edges);
+        try {
+            FileWriter fw = new FileWriter(file);
+            fw.write(jsonObject.toString());
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
+
 
     @Override
     public boolean load(String file) {
+        /*
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        DirectedWeightedGraph graph = new DWGraph();
+        JsonArray nodesJsonArray = jsonObject.get("Nodes").getAsJsonArray();
+        for (int i = 0; i < nodesJsonArray.size(); i++) {
+            JsonObject jsonObjectNode = nodesJsonArray.get(i).getAsJsonObject();
+            int key = jsonObjectNode.get("id").getAsInt();
+            double weight = 0;
+            if (jsonObjectNode.keySet().contains("weight")) {
+                weight = jsonObjectNode.get("weight").getAsDouble();
+            }
+            JsonElement location = jsonObjectNode.get("pos");
+            String s = location.getAsString();
+            String arr[] = s.split(",");
+            double x = Double.parseDouble(arr[0]);
+            double y = Double.parseDouble(arr[1]);
+            double z = Double.parseDouble(arr[2]);
+            GeoLocation pos = new geoLo(x, y, z);
+            NodeData n = new Node_Data(key, pos, weight, "White", -1);
+            graph.addNode(n);
+        }
+
+        JsonArray edgesJsonArray = jsonObject.get("Edges").getAsJsonArray();
+        for (int i = 0; i < edgesJsonArray.size(); i++) {
+            JsonObject jsonObjectEdge = edgesJsonArray.get(i).getAsJsonObject();
+            int src = jsonObjectEdge.get("src").getAsInt();
+            int dest = jsonObjectEdge.get("dest").getAsInt();
+            double w = jsonObjectEdge.get("w").getAsDouble();
+            graph.connect(src, dest, w);
+        }
+        return graph;
+    }
+
+         */
         return false;
+
     }
 
     private void resetTag() {
@@ -177,19 +265,22 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             }
         }
         return shortest;
-
     }
+
     private void resetInfo() {
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
             Node_Data n = (Node_Data) it.next();
             n.setInfo("White");
         }
     }
+
     private void resetWeight() {
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
             Node_Data n = (Node_Data) it.next();
             n.setWeight(Double.MAX_VALUE);
         }
     }
-
 }
+
+
+
