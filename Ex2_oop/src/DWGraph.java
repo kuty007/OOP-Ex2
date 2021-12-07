@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class DWGraph implements DirectedWeightedGraph {
+
     private HashMap<Integer, NodeData> nodes;
     private HashMap<Integer, HashMap<Integer, EdgeData>> edges;
     private int numOfNodes;
@@ -18,11 +19,36 @@ public class DWGraph implements DirectedWeightedGraph {
 
 
     }
+
     public DWGraph(DirectedWeightedGraph other) {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
+        nodesDeepCopy(other, this.nodes);
+        edgesDeepCopy(other, this.edges);
         this.numOfEdges = other.edgeSize();
         this.numOfNodes = other.nodeSize();
+    }
+    private HashMap<Integer, Node_Data> nodesDeepCopy(DirectedWeightedGraph other, HashMap nodes) {
+        HashMap<Integer, Node_Data> h = nodes;
+        for (Iterator<NodeData> it = other.nodeIter(); it.hasNext(); ) {
+            Node_Data n = (Node_Data) it.next();
+            this.addNode(n);
+        }
+        return h;
+    }
+    private HashMap<Integer, HashMap<Integer, EdgeData>> edgesDeepCopy(DirectedWeightedGraph other, HashMap edges) {
+        HashMap<Integer, HashMap<Integer, EdgeData>> h = edges;
+        int key;
+        for (Iterator<NodeData> it = this.nodeIter(); it.hasNext(); ) {
+            NodeData n = it.next();
+            key = n.getKey();
+            for (Iterator<EdgeData> iter = other.edgeIter(key); iter.hasNext(); ) {
+                EdgeData e = iter.next();
+                EdgeData edge = new edge(e);
+                this.edges.get(e.getSrc()).put(e.getDest(), edge);
+            }
+        }
+        return h;
     }
 
     @Override
