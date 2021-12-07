@@ -1,3 +1,4 @@
+import java.awt.geom.Arc2D;
 import java.util.List;
 
 import com.google.gson.*;
@@ -37,6 +38,18 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             return true;
         }
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
+            Node_Data n = (Node_Data) it.next();
+            boolean b = this.bfs(n);
+            resetTag();
+            if (!b) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isSubGraphConnected(List<NodeData> ln) {
+        for (Iterator<NodeData> it = ln.iterator(); it.hasNext(); ) {
             Node_Data n = (Node_Data) it.next();
             boolean b = this.bfs(n);
             resetTag();
@@ -113,21 +126,47 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         for (int i = 0; i < graph.nodeSize(); i++) {
             Double max = Double.MIN_VALUE;
             for (int j = 0; j < graph.nodeSize(); j++) {
-                if(i!=j){
-                    Double maxDis = shortestPathDist(i,j);
-                    if (maxDis>max){
-                        max =maxDis;
+                if (i != j) {
+                    Double maxDis = shortestPathDist(i, j);
+                    if (maxDis > max) {
+                        max = maxDis;
                     }
                 }
             }
-            centerNode.put(graph.getNode(i),max);
+            centerNode.put(graph.getNode(i), max);
         }
-        return Collections.min(centerNode .entrySet(), Map.Entry.comparingByValue()).getKey();
+        return Collections.min(centerNode.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        return null;
+        if (cities.isEmpty()) {
+            return null;
+        }
+        if (!isConnected() && !isSubGraphConnected(cities)) {
+            return null;
+        }
+        ArrayList<NodeData> path = new ArrayList<>();
+        int closet;
+        for (int i = 0; i < cities.size(); i++) {
+            closet = -1;
+            double min = Double.MAX_VALUE;
+            if (!path.contains(cities.get(i))) {
+                for (int j = 0; j < cities.size(); j++) {
+                    if (!path.contains(cities.get(j)) && (i != j)) {
+                        double minDis = shortestPathDist(i, j);
+                        if (minDis < min) {
+                            min = minDis;
+                            closet = j;
+                        }
+                    }
+
+                }
+                path.addAll(shortestPath(i,closet));
+            }
+
+        }
+        return path;
     }
 
     @Override
