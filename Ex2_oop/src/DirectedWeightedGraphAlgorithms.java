@@ -1,3 +1,5 @@
+import org.json.JSONException;
+
 import java.util.List;
 /**
  * This interface represents a Directed (positive) Weighted Graph Theory Algorithms including:
@@ -78,7 +80,7 @@ public interface DirectedWeightedGraphAlgorithms {
      * @param file - the file name (may include a relative path).
      * @return true - iff the file was successfully saved
      */
-    public boolean save(String file);
+    public boolean save(String file) throws JSONException;
 
     /**
      * This method loads a graph to this graph algorithm.
