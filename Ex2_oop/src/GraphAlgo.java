@@ -185,32 +185,11 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
     @Override
     public boolean save(String file) throws JSONException {
 
-        JSONObject jsonObject = new JSONObject();
-        JSONObject node;
-        JSONObject edge;
-        JSONArray nodes = new JSONArray();
-        JSONArray edges = new JSONArray();
-        for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
-            Node_Data n = (Node_Data) it.next();
-            node = new JSONObject();
-            node.put("pos", n.getLocation());
-            node.put("id", n.getKey());
-            node.put("weight", n.getWeight());
-            nodes.put(node);
-            for (Iterator<EdgeData> iter = this.graph.edgeIter(n.getKey()); iter.hasNext(); ) {
-                edge e = (edge) iter.next();
-                edge = new JSONObject();
-                edge.put("src", e.getSrc());
-                edge.put("w", e.getWeight());
-                edge.put("dest", e.getDest());
-                edges.put(edge);
-            }
-        }
-        jsonObject.put("Nodes", nodes);
-        jsonObject.put("Edges", edges);
+        String json = toJson();
+
         try {
             FileWriter fw = new FileWriter(file);
-            fw.write(jsonObject.toString(2));
+            fw.write(json);
             fw.flush();
             fw.close();
         } catch (IOException e) {
@@ -342,6 +321,42 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             Node_Data n = (Node_Data) it.next();
             n.setWeight(Double.MAX_VALUE);
         }
+    }
+
+    public String toJson() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONObject node;
+            JSONObject edge;
+            JSONArray nodes = new JSONArray();
+            JSONArray edges = new JSONArray();
+            for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
+                Node_Data n = (Node_Data) it.next();
+                node = new JSONObject();
+                node.put("pos", n.getLocation());
+                node.put("id", n.getKey());
+                node.put("weight", n.getWeight());
+                nodes.put(node);
+                for (Iterator<EdgeData> iter = this.graph.edgeIter(n.getKey()); iter.hasNext(); ) {
+                    edge e = (edge) iter.next();
+                    edge = new JSONObject();
+                    edge.put("src", e.getSrc());
+                    edge.put("w", e.getWeight());
+                    edge.put("dest", e.getDest());
+                    edges.put(edge);
+                }
+            }
+            jsonObject.put("Nodes", nodes);
+            jsonObject.put("Edges", edges);
+
+            return jsonObject.toString(2);
+        } catch (Exception ex) {
+            return "{}";
+        }
+    }
+
+    public boolean compareData(GraphAlgo other) {
+        return toJson().compareTo(other.toJson()) == 0;
     }
 }
 

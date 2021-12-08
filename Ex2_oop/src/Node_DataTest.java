@@ -15,10 +15,10 @@ class Node_DataTest {
 
     @Test
     void getKey() {
-        assertEquals(2,b1.getKey());
-        assertEquals(3,b2.getKey());
-        assertEquals(4,b3.getKey());
-        assertEquals(5,b4.getKey());
+        assertEquals(2, b1.getKey());
+        assertEquals(3, b2.getKey());
+        assertEquals(4, b3.getKey());
+        assertEquals(5, b4.getKey());
     }
 
     @Test
@@ -26,7 +26,7 @@ class Node_DataTest {
         assertEquals(8, b1.getLocation().x());
         assertEquals(9, b1.getLocation().y());
         assertEquals(6, b2.getLocation().y());
-        assertEquals(3,b3.getLocation().z());
+        assertEquals(3, b3.getLocation().z());
     }
 
     @Test
@@ -60,9 +60,9 @@ class Node_DataTest {
     @Test
     void getInfo() {
         assertEquals("White", b1.getInfo());
-        assertEquals("White",b2.getInfo());
-        assertEquals("White",b3.getInfo());
-        assertEquals("White",b4.getInfo());
+        assertEquals("White", b2.getInfo());
+        assertEquals("White", b3.getInfo());
+        assertEquals("White", b4.getInfo());
     }
 
     @Test
