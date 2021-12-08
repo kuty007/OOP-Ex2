@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public class DWGraph implements DirectedWeightedGraph {
     public static void main(String[] args) {
-        DWGraph graph = loadFile("C:\\Users\\Asaf Yekutiel\\IdeaProjects\\gitpro\\Ex2_oop\\src\\G2.json");
+        DWGraph graph = loadFile("data/in/G2.json");
         System.out.println(graph.numOfEdges);
     }
 

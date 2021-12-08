@@ -1,49 +1,64 @@
+import org.json.JSONException;
+
+
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class GraphAlgoTest {
 
-    DWGraph graph = DWGraph.loadFile("C:\\Users\\Asaf Yekutiel\\IdeaProjects\\gitpro\\Ex2_oop\\src\\G1.json");
+    DWGraph graph1 = DWGraph.loadFile("data/in/G1.json");
+    GraphAlgo g1 = new GraphAlgo();
+    DWGraph graph2 = DWGraph.loadFile("data/in/G2.json");
+    GraphAlgo g2 = new GraphAlgo();
+    DWGraph graph3 = DWGraph.loadFile("data/in/G3.json");
+    GraphAlgo g3 = new GraphAlgo();
 
 
 
-
-    @org.junit.jupiter.api.Test
-    void init() {
+    @Test
+    void init() throws JSONException {
+        g3.init(graph1);
+        g3.save("data/out/json.json");
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getGraph() {
+        g3.init(graph1);
+        g3.getGraph();
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void copy() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void isConnected() {
+
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void shortestPathDist() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void shortestPath() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void center() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void tsp() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void save() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void load() {
     }
 }

@@ -10,14 +10,16 @@ import java.io.*;
 import java.util.*;
 
 public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
+
+    private DirectedWeightedGraph graph;
+
     public static void main(String[] args) {
-        DWGraph graph = DWGraph.loadFile("C:\\Users\\Asaf Yekutiel\\IdeaProjects\\gitpro\\Ex2_oop\\src\\G3.json");
+        DWGraph graph = DWGraph.loadFile("data/in/G3.json");
         GraphAlgo g = new GraphAlgo();
         g.init(graph);
         System.out.println(g.center());
     }
 
-    private DirectedWeightedGraph graph;
 
     public GraphAlgo() {
         this.graph = new DWGraph();
@@ -208,7 +210,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         jsonObject.put("Edges", edges);
         try {
             FileWriter fw = new FileWriter(file);
-            fw.write(jsonObject.toString());
+            fw.write(jsonObject.toString(2));
             fw.flush();
             fw.close();
         } catch (IOException e) {
@@ -246,7 +248,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         }
         return true;
         // try
-        //            FileReader fr = new FileReader(new File("data.json"));
+        //            FileReader fr = new FileReader(new File("data/in/data.json"));
         //
         //            String json = "";
         //            while(fr.ready())
