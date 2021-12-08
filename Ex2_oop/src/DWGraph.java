@@ -1,8 +1,19 @@
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class DWGraph implements DirectedWeightedGraph {
+    public static void main(String[] args) {
+        DWGraph graph = loadFile("C:\\Users\\Asaf Yekutiel\\IdeaProjects\\gitpro\\Ex2_oop\\src\\G2.json");
+        System.out.println(graph.numOfEdges);
+    }
 
     private HashMap<Integer, NodeData> nodes;
     private HashMap<Integer, HashMap<Integer, EdgeData>> edges;
@@ -19,7 +30,6 @@ public class DWGraph implements DirectedWeightedGraph {
 
 
     }
-
     public DWGraph(DirectedWeightedGraph other) {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
@@ -27,6 +37,34 @@ public class DWGraph implements DirectedWeightedGraph {
         edgesDeepCopy(other, this.edges);
         this.numOfEdges = other.edgeSize();
         this.numOfNodes = other.nodeSize();
+    }
+    public static DWGraph loadFile(String path) {
+        DirectedWeightedGraph newG = null;
+        try {
+            //create a Gson object
+            newG = new DWGraph();
+            //read from file as JsonObject
+            JsonObject json = new JsonParser().parse(new FileReader(path)).getAsJsonObject();
+            JsonArray E = json.getAsJsonArray("Edges");
+            JsonArray V = json.getAsJsonArray("Nodes");
+            //run by json and convert it to Nodes
+            for (JsonElement node : V) {
+                String[] pos = ((JsonObject) node).get("pos").getAsString().split(",");
+                GeoLocation location = new geoLo(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
+                Node_Data newN = new Node_Data(((JsonObject) node).get("id").getAsInt(), location);
+                newG.addNode(newN);
+            }
+            //run by json and convert it to Edges
+            for (JsonElement edge : E) {
+                JsonObject e = (JsonObject) edge;
+                newG.connect(e.get("src").getAsInt(), e.get("dest").getAsInt(), e.get("w").getAsDouble());
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return (DWGraph) newG;
     }
 
     private HashMap<Integer, Node_Data> nodesDeepCopy(DirectedWeightedGraph other, HashMap nodes) {

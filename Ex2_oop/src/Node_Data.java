@@ -26,6 +26,12 @@ public class Node_Data implements NodeData {
         this.info = info;
         this.tag = tag;
     }
+
+    public Node_Data(int id, GeoLocation location) {
+        this.key =id;
+        this.location = (geoLo) location;
+    }
+
     @Override
     public int getKey() {
         return this.key;
