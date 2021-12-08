@@ -100,6 +100,21 @@ public class DWGraph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<NodeData> nodeIter() {
+        final int currentChange = this.changes;
+        return new Iterator<NodeData>(){
+
+
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public NodeData next() {
+                return null;
+            }
+        }
+
 
         return null;
     }
