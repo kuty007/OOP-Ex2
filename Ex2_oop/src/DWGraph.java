@@ -1,8 +1,19 @@
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class DWGraph implements DirectedWeightedGraph {
+    public static void main(String[] args) {
+        DWGraph graph = loadFile("C:\\Users\\Asaf Yekutiel\\IdeaProjects\\gitpro\\Ex2_oop\\src\\G2.json");
+        System.out.println(graph.numOfEdges);
+    }
 
     private HashMap<Integer, NodeData> nodes;
     private HashMap<Integer, HashMap<Integer, EdgeData>> edges;
@@ -19,7 +30,6 @@ public class DWGraph implements DirectedWeightedGraph {
 
 
     }
-
     public DWGraph(DirectedWeightedGraph other) {
         this.nodes = new HashMap<>();
         this.edges = new HashMap<>();
@@ -28,6 +38,35 @@ public class DWGraph implements DirectedWeightedGraph {
         this.numOfEdges = other.edgeSize();
         this.numOfNodes = other.nodeSize();
     }
+    public static DWGraph loadFile(String path) {
+        DirectedWeightedGraph newG = null;
+        try {
+            //create a Gson object
+            newG = new DWGraph();
+            //read from file as JsonObject
+            JsonObject json = new JsonParser().parse(new FileReader(path)).getAsJsonObject();
+            JsonArray E = json.getAsJsonArray("Edges");
+            JsonArray V = json.getAsJsonArray("Nodes");
+            //run by json and convert it to Nodes
+            for (JsonElement node : V) {
+                String[] pos = ((JsonObject) node).get("pos").getAsString().split(",");
+                GeoLocation location = new geoLo(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
+                Node_Data newN = new Node_Data(((JsonObject) node).get("id").getAsInt(), location);
+                newG.addNode(newN);
+            }
+            //run by json and convert it to Edges
+            for (JsonElement edge : E) {
+                JsonObject e = (JsonObject) edge;
+                newG.connect(e.get("src").getAsInt(), e.get("dest").getAsInt(), e.get("w").getAsDouble());
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return (DWGraph) newG;
+    }
+
     private HashMap<Integer, Node_Data> nodesDeepCopy(DirectedWeightedGraph other, HashMap nodes) {
         HashMap<Integer, Node_Data> h = nodes;
         for (Iterator<NodeData> it = other.nodeIter(); it.hasNext(); ) {
@@ -36,6 +75,7 @@ public class DWGraph implements DirectedWeightedGraph {
         }
         return h;
     }
+
     private HashMap<Integer, HashMap<Integer, EdgeData>> edgesDeepCopy(DirectedWeightedGraph other, HashMap edges) {
         HashMap<Integer, HashMap<Integer, EdgeData>> h = edges;
         int key;
@@ -101,33 +141,114 @@ public class DWGraph implements DirectedWeightedGraph {
     @Override
     public Iterator<NodeData> nodeIter() {
         final int currentChange = this.changes;
-        return new Iterator<NodeData>(){
+        Iterator<NodeData> iter = nodes.values().iterator();
+        return new Iterator<NodeData>() {
+            NodeData last = null;
 
-
-            @Override
             public boolean hasNext() {
-                return false;
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                return iter.hasNext();
             }
 
             @Override
             public NodeData next() {
-                return null;
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                last = iter.next();
+                return last;
             }
-        }
 
-
-        return null;
+            @Override
+            public void remove() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                if (last != null) {
+                    removeNode(last.getKey());
+                }
+                Iterator.super.remove();
+            }
+        };
     }
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return null;
+        final int currentChange = this.changes;
+        return new Iterator<EdgeData>() {
+            Iterator<HashMap<Integer, EdgeData>> iter = edges.values().iterator();
+            ;
+            EdgeData last = null;
+
+            @Override
+            public boolean hasNext() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                return iter.hasNext();
+            }
+
+            @Override
+            public EdgeData next() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                last = (EdgeData) iter.next();
+                return last;
+            }
+
+            public void remove() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                if (last != null) {
+                    removeEdge(last.getSrc(), last.getDest());
+                }
+                Iterator.super.remove();
+            }
+        };
     }
 
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        return null;
+        final int currentChange = this.changes;
+        return new Iterator<EdgeData>() {
+            Iterator<EdgeData> iter = edges.get(node_id).values().iterator();
+            EdgeData last = null;
+
+            @Override
+            public boolean hasNext() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                return iter.hasNext();
+            }
+
+            @Override
+            public EdgeData next() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                last = iter.next();
+                return last;
+            }
+
+            @Override
+            public void remove() {
+                if (currentChange != changes) {
+                    throw new RuntimeException("The graph has changed while the iterator was running");
+                }
+                if (last != null) {
+                    removeEdge(last.getSrc(), last.getDest());
+
+                }
+                Iterator.super.remove();
+            }
+        };
     }
+
 
     @Override
     public NodeData removeNode(int key) {
