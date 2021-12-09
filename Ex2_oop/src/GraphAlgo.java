@@ -26,23 +26,41 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
     }
 
 
-
+    /**
+     * Init the graph on which this set of algorithms operates.
+     * @param g - a weighted graph
+     */
     @Override
     public void init(DirectedWeightedGraph g) {
         this.graph = g;
 
     }
 
+    /**
+     * Return the underlying graph of which this class works.
+     * @return a directed weighted graph.
+     */
     @Override
     public DirectedWeightedGraph getGraph() {
         return graph;
     }
 
+    /**
+     * Compute a deep copy of this weighted graph.
+     * The method does this by using the deep copy constructor in DWGraph_DS.
+     * @return identical graph.
+     */
     @Override
     public DirectedWeightedGraph copy() {
         return new DWGraph(this.graph);
     }
 
+    /**
+     * Returns true if and only if (iff) there is a valid path from each node to each
+     * other node.
+     * The method uses BFS algorithm.
+     * @return true if strongly connected, false otherwise.
+     */
     @Override
     public boolean isConnected() {
         if (this.graph.nodeSize() == 0) {
@@ -70,7 +88,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         }
         return true;
     }
-
+    //Returns the length of the shortest path between src to dest.
     @Override
     public double shortestPathDist(int src, int dest) {
         if (this.graph.getNode(src) == null || this.graph.getNode(dest) == null) {
@@ -82,16 +100,31 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         resetInfo();
         resetTag();
         resetWeight();
-        double d = Dijkstra((Node_Data) this.graph.getNode(src), (Node_Data) this.graph.getNode(dest));
+        double dij = Dijkstra((Node_Data) this.graph.getNode(src), (Node_Data) this.graph.getNode(dest));
         resetInfo();
         resetTag();
         resetWeight();
-        if (d == Integer.MAX_VALUE) {
+        if (dij == Integer.MAX_VALUE) {
             return -1;
         }
-        return d;
+        return dij;
     }
 
+    /**
+     * Returns the shortest path between src to dest - as an ordered List of nodes:
+     * src --> n1 --> n2 --> ... --> dest.
+     * Note: if no such path --> null.
+     * The method uses a combination of BFS and Dijkstra's algorithms.
+     * Note2: Dijkstra method changes the value of each node's tag, info and weight.
+     * Thus the method calls resetTag, resetInfo and resetPre functions that resets the tag ,the info and the weight
+     * that changed.
+     * The method uses Dijkstra algorithm to build a List od nodes: dest --> ... -->src
+     * Thus the method need to reverse the list later.
+     * Complexity: O((|V|+|E|)log|V|), |V|=number of nodes, |E|=number of edges.
+     * @param src  - start node
+     * @param dest - end (target) node
+     * @return List of nodes.
+     */
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
         List<NodeData> list = new LinkedList<>();
@@ -181,7 +214,12 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         return path;
     }
 
-
+    /**
+     * Saves this weighted (directed) graph to the given
+     * file name - in JSON format
+     * @param file - the file name.
+     * @return true - iff the file was successfully saved.
+     */
     @Override
     public boolean save(String file) throws JSONException {
 
@@ -198,7 +236,13 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         return true;
     }
 
-
+    /**
+     * Load a graph to this graph algorithm.
+     * if the file was successfully loaded - the underlying graph
+     * of this class will be changed (to the loaded one), in case the
+     * @param file - file name of JSON file
+     * @return true - iff the graph was successfully loaded.
+     */
     @Override
     public boolean load(String file) {
         try {
@@ -249,7 +293,10 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
 
     }
 
-
+    /**
+     * This private method resets the values of all the tags of the nodes in the graph.
+     * Reset the value = change it back to default value: -1.
+     */
     private void resetTag() {
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
             Node_Data n = (Node_Data) it.next();
@@ -309,6 +356,10 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         return shortest;
     }
 
+    /**
+     * This private method resets the value of info in each node in the graph.
+     * Reset the value = change it back to default value: White
+     */
     private void resetInfo() {
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
             Node_Data n = (Node_Data) it.next();
@@ -316,6 +367,10 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         }
     }
 
+    /**
+     * This private method resets the value of weight in each node in the graph.
+     * Reset the value = change it back to default value: Double.MAX_VALUE (infinity).
+     */
     private void resetWeight() {
         for (Iterator<NodeData> it = this.graph.nodeIter(); it.hasNext(); ) {
             Node_Data n = (Node_Data) it.next();

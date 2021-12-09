@@ -111,7 +111,7 @@ class GraphAlgoTest {
 
         List<NodeData> res = g1.tsp(cities);
 
-        assertEquals(7, res.size());
+        assertEquals(7, res.toString());
     }
 
     @Test

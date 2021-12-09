@@ -138,10 +138,10 @@ public class Node_Data implements NodeData {
         return Double.compare(n.getWeight(), o.getWeight());
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Node_Data Node_Data = (Node_Data) o;
+    public boolean equals(Object o1) {
+        if (this == o1) return true;
+        if (o1 == null || getClass() != o1.getClass()) return false;
+        Node_Data Node_Data = (Node_Data) o1;
         return key == Node_Data.key &&
                 Double.compare(Node_Data.weight, weight) == 0 &&
                 tag == Node_Data.tag &&

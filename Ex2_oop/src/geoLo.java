@@ -3,6 +3,10 @@ public class geoLo implements GeoLocation {
     private double y;
     private double z;
 
+    /**
+     * constructor - create new geo location
+     * @param x,y,z - aka Point3D
+     * */
     public geoLo(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -16,22 +20,38 @@ public class geoLo implements GeoLocation {
 
     }
 
-
+    /**
+     * return the value of x represent the location
+     * @return x - aka Point3D
+     * */
     @Override
     public double x() {
         return this.x;
     }
 
+    /**
+     * return the value of y represent the location
+     * @return y - aka Point3D
+     * */
     @Override
     public double y() {
         return this.y;
     }
 
+    /**
+     * return the value of z represent the location
+     * @return z - aka Point3D
+     * */
     @Override
     public double z() {
         return this.z;
     }
 
+    /**
+     * return the distance of between other geo_location
+     * @param g - object data of geo location
+     * @return d - double of the distance.
+     * */
     @Override
     public double distance(GeoLocation g) {
         double x_dis, y_dis, z_dis;
@@ -41,6 +61,10 @@ public class geoLo implements GeoLocation {
         return Math.sqrt(x_dis + y_dis + z_dis);
     }
 
+    /**
+     * return the string of this geo_location
+     * @return s - string of geo_location
+     * */
     public String toString() {
         return this.x + ", " + this.y + ", " + this.z;
     }
