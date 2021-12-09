@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
-
-
 public class Node_EdgeGUI extends JComponent {
     private static DWGraph graph;
     private int height;
