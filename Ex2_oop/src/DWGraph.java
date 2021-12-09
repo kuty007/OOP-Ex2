@@ -91,11 +91,23 @@ public class DWGraph implements DirectedWeightedGraph {
         return h;
     }
 
+    /**
+     * Returns the node_data by the node id,
+     * @param key - the node_id
+     * @return the node_data by the node_id, null if none.
+     */
     @Override
     public NodeData getNode(int key) {
         return this.nodes.get(key);
     }
 
+    /**
+     * Returns the edge (src,dest) between two nodes, null if none.
+     * Complexity: this method run in O(1) time.
+     * @param src - source node id.
+     * @param dest - destination node id.
+     * @return an edge, null if none.
+     */
     @Override
     public EdgeData getEdge(int src, int dest) {
         if (this.nodes.containsKey(src) && this.nodes.containsKey(dest)) {//if we have this 2 nodes go to the edges HashMap and return the value there
@@ -104,6 +116,12 @@ public class DWGraph implements DirectedWeightedGraph {
         return null;
     }
 
+    /**
+     * Adds a new node to the graph with the given node_data.
+     * This method simply do nothing if this graph already contains this node_data.
+     * Complexity: this method run in O(1) time.
+     * @param n - node_data
+     */
     @Override
     public void addNode(NodeData n) {
         if (nodes.containsKey(n.getKey())) {
@@ -115,7 +133,15 @@ public class DWGraph implements DirectedWeightedGraph {
         numOfNodes++;
     }
 
-
+    /**
+     * Connects an edge with positive weight w between node src to node dest.
+     * NOTE1: If there is already an edge between node src to node dest in this graph,
+     * the method will update the weight according to the weight obtained.
+     * NOTE2: This method simply do nothing if node src and node dest are the same node.
+     * @param src - the source id's of the edge.
+     * @param dest - the destination id's of the edge.
+     * @param w - positive weight representing the cost (aka time, price, etc) between src-->dest.
+     */
     @Override
     public void connect(int src, int dest, double w) {
         if (w < 0) {
@@ -126,8 +152,8 @@ public class DWGraph implements DirectedWeightedGraph {
         }
 
         if (this.getEdge(src, dest) != null && edges.get(src).get(dest).getWeight() != w) {
-            EdgeData e = new edge(src, dest, w);
-            edges.get(src).put(dest, e);
+            EdgeData ed = new edge(src, dest, w);
+            edges.get(src).put(dest, ed);
             changes++;
         } else if (nodes.containsKey(src) && nodes.containsKey(dest) && this.getEdge(src, dest) == null) {
             EdgeData e = new edge(src, dest, w);
@@ -249,7 +275,12 @@ public class DWGraph implements DirectedWeightedGraph {
         };
     }
 
-
+    /**
+     * Deletes the node (with the given ID) from the graph -
+     * and removes all edges which starts or ends at this node.
+     * @return the data of the removed node (null if none).
+     * @param key - the deleted node id's.
+     */
     @Override
     public NodeData removeNode(int key) {
         if (!this.nodes.containsKey(key)) {
@@ -259,8 +290,8 @@ public class DWGraph implements DirectedWeightedGraph {
         edges.remove(key);
         numOfEdges -= size;
         changes += size;
-        Collection<Integer> c = edges.keySet();
-        for (int i : c) {
+        Collection<Integer> col = edges.keySet();
+        for (int i : col) {
             if (edges.get(i).containsKey(key)) {
                 edges.get(i).remove(key);
                 changes++;
@@ -275,7 +306,14 @@ public class DWGraph implements DirectedWeightedGraph {
         return n;
     }
 
-
+    /**
+     * Deletes the edge from the graph,
+     * Complexity: this method run in O(1) time.
+     * Note: if the edge does not exists in the graph - the method simply does nothing.
+     * @param src - edge source node id's.
+     * @param dest - edge destination node id's.
+     * @return the data of the removed edge (null if none).
+     */
     @Override
     public EdgeData removeEdge(int src, int dest) {
         EdgeData e = edges.get(src).remove(dest);
@@ -285,16 +323,31 @@ public class DWGraph implements DirectedWeightedGraph {
         return e;
     }
 
+    /**
+     * Returns the number of vertices (nodes) in the graph.
+     * Complexity: this method run in O(1) time.
+     * @return number of nodes in this graph.
+     */
     @Override
     public int nodeSize() {
         return this.numOfNodes;
     }
 
+    /**
+     * Returns the number of edges.
+     * Complexity: this method run in O(1) time.
+     * @return number of edges in this graph.
+     */
     @Override
     public int edgeSize() {
         return this.numOfEdges;
     }
 
+    /**
+     * Returns the Mode Count - for testing changes in the graph.
+     * Complexity: this method run in O(1) time.
+     * @return number of changes in this graph.
+     */
     @Override
     public int getMC() {
         return this.changes;
