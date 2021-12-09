@@ -17,7 +17,13 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         DWGraph graph = DWGraph.loadFile("data/in/G3.json");
         GraphAlgo g = new GraphAlgo();
         g.init(graph);
-        System.out.println(g.center());
+        List<NodeData> list = new ArrayList<NodeData>();
+        list.add(graph.getNode(3));
+        list.add(graph.getNode(1));
+        list.add(graph.getNode(0));
+        list.add(graph.getNode(2));
+        list.add(graph.getNode(5));
+        //System.out.println(tsp(list));
     }
 
 
@@ -190,28 +196,28 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         if (!isConnected() && !isSubGraphConnected(cities)) {
             return null;
         }
-        ArrayList<NodeData> visited = new ArrayList<>();
         ArrayList<NodeData> path = new ArrayList<>();
         NodeData start = cities.get(0);
-        visited.add(start);
-        while (visited.size() < cities.size()) {
+        cities.remove(start);
+        path.add(start);
+        while (cities.size() > 0) {
             int closet = -1;
             double min = Double.MAX_VALUE;
             for (int i = 0; i < cities.size(); i++) {
-                if (!visited.contains(cities.get(i)) && start != (cities.get(i))) {
-                    double minDis = shortestPathDist(start.getKey(), (cities.get(i).getKey()));
-                    if (minDis < min) {
-                        min = minDis;
-                        closet = i;
-                    }
+                double minDis = shortestPathDist(start.getKey(), (cities.get(i).getKey()));
+                if (minDis < min) {
+                    min = minDis;
+                    closet = i;
                 }
             }
-            path.addAll(shortestPath(start.getKey(), cities.get(closet).getKey()));
-            visited.add(cities.get(closet));
+            List<NodeData> add = (shortestPath(start.getKey(), cities.get(closet).getKey()));
+            add.remove(0);
+            path.addAll(add);
             start = cities.get(closet);
-
+            cities.remove(start);
         }
         return path;
+
     }
 
     /**
@@ -253,16 +259,16 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             JsonArray E = json.getAsJsonArray("Edges");
             JsonArray V = json.getAsJsonArray("Nodes");
             //run by json and convert it to Nodes
-            for (JsonElement node: V){
+            for (JsonElement node : V) {
                 String[] pos = ((JsonObject) node).get("pos").getAsString().split(",");
-                GeoLocation location = new geoLo(Double.parseDouble(pos[0]),Double.parseDouble(pos[1]),Double.parseDouble(pos[2]));
-                Node_Data newN = new Node_Data(((JsonObject)node).get("id").getAsInt(),location);
+                GeoLocation location = new geoLo(Double.parseDouble(pos[0]), Double.parseDouble(pos[1]), Double.parseDouble(pos[2]));
+                Node_Data newN = new Node_Data(((JsonObject) node).get("id").getAsInt(), location);
                 newG.addNode(newN);
             }
             //run by json and convert it to Edges
-            for (JsonElement edge : E){
-                JsonObject e = (JsonObject)edge;
-                newG.connect(e.get("src").getAsInt(),e.get("dest").getAsInt(),e.get("w").getAsDouble());
+            for (JsonElement edge : E) {
+                JsonObject e = (JsonObject) edge;
+                newG.connect(e.get("src").getAsInt(), e.get("dest").getAsInt(), e.get("w").getAsDouble());
             }
             this.graph = newG;
         } catch (FileNotFoundException e) {

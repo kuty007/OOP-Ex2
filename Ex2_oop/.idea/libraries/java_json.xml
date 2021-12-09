@@ -1,7 +1,11 @@
 <component name="libraryTable">
   <library name="java-json">
-    <CLASSES />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/production/Ex2_oop/lib/java-json.jar!/" />
+    </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/out/production/Ex2_oop/lib/java-json.jar!/" />
+    </SOURCES>
   </library>
 </component>
