@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -108,10 +109,18 @@ class GraphAlgoTest {
         cities.add(graph1.getNode(0));
         cities.add(graph1.getNode(5));
         cities.add(graph1.getNode(3));
-
         List<NodeData> res = g1.tsp(cities);
+        List<NodeData> ans = new ArrayList<>();
+        ans.add(graph1.getNode(0));
+        ans.add(graph1.getNode(1));
+        ans.add(graph1.getNode(2));
+        ans.add(graph1.getNode(3));
+        ans.add(graph1.getNode(3));
+        ans.add(graph1.getNode(4));
+        ans.add(graph1.getNode(5));
 
-        assertEquals(7, res.toString());
+
+        assertEquals(ans.toString(), res.toString());
     }
 
     @Test
