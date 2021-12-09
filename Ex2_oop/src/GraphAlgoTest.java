@@ -115,7 +115,6 @@ class GraphAlgoTest {
         ans.add(graph1.getNode(1));
         ans.add(graph1.getNode(2));
         ans.add(graph1.getNode(3));
-        ans.add(graph1.getNode(3));
         ans.add(graph1.getNode(4));
         ans.add(graph1.getNode(5));
 

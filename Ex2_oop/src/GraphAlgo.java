@@ -177,7 +177,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             Double max = Double.MIN_VALUE;
             for (int j = 0; j < graph.nodeSize(); j++) {
                 if (i != j) {
-                    Double maxDis = shortestPathDist(i, j);
+                    Double maxDis = shortestPathDist(graph.getNode(i).getKey(),graph.getNode(j).getKey());
                     if (maxDis > max) {
                         max = maxDis;
                     }

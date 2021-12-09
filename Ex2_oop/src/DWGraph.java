@@ -16,6 +16,11 @@ public class DWGraph implements DirectedWeightedGraph {
     }
 
     private HashMap<Integer, NodeData> nodes;
+
+    public HashMap<Integer, HashMap<Integer, EdgeData>> getEdges() {
+        return edges;
+    }
+
     private HashMap<Integer, HashMap<Integer, EdgeData>> edges;
     private int numOfNodes;
     private int numOfEdges;
@@ -38,6 +43,8 @@ public class DWGraph implements DirectedWeightedGraph {
         this.numOfEdges = other.edgeSize();
         this.numOfNodes = other.nodeSize();
     }
+
+
     public static DWGraph loadFile(String path) {
         DirectedWeightedGraph newG = null;
         try {
@@ -183,6 +190,7 @@ public class DWGraph implements DirectedWeightedGraph {
                 if (currentChange != changes) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
+                if(hasNext())
                 last = iter.next();
                 return last;
             }
@@ -204,7 +212,7 @@ public class DWGraph implements DirectedWeightedGraph {
     public Iterator<EdgeData> edgeIter() {
         final int currentChange = this.changes;
         return new Iterator<EdgeData>() {
-            Iterator<HashMap<Integer, EdgeData>> iter = edges.values().iterator();
+            final Iterator iter = edges.values().iterator();
             ;
             EdgeData last = null;
 
@@ -221,6 +229,7 @@ public class DWGraph implements DirectedWeightedGraph {
                 if (currentChange != changes) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
+                if(hasNext())
                 last = (EdgeData) iter.next();
                 return last;
             }
@@ -249,6 +258,7 @@ public class DWGraph implements DirectedWeightedGraph {
                 if (currentChange != changes) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
+
                 return iter.hasNext();
             }
 
@@ -257,6 +267,7 @@ public class DWGraph implements DirectedWeightedGraph {
                 if (currentChange != changes) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
+                if(hasNext())
                 last = iter.next();
                 return last;
             }
