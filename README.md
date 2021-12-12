@@ -67,11 +67,11 @@ Complexity: O((|V|+|E|)log|V|), |V|=number of nodes, |E|=number of edges.
 
 | Graph Size | isConnected | Center  |
 |------------|-------------|---------|
-| 1000       |   32 ms     |too long |
+| 1000       |   653 ms     |too long |
 | 10k        |   32 ms     |too long |
 | 100k       |   ""        |too long |
 | 1M         |   ""        |too long |
-| G1 (16)    |   32 ms     |  76 ms  |
+| G1 (16)    |   32 ms     |  42 ms  |
 | G2 (31)    |   32 ms     |  54 ms  |
 | G3 (48)    |   17 ms     | 196 ms  |
 
