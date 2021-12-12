@@ -65,15 +65,15 @@ Complexity: O((|V|+|E|)log|V|), |V|=number of nodes, |E|=number of edges.
   
   ## performances
 
-| Graph Size | isConnected | Center  |
-|------------|-------------|---------|
-| 1000       |   653 ms     |too long |
-| 10k        |   32 ms     |too long |
-| 100k       |   ""        |too long |
-| 1M         |   ""        |too long |
-| G1 (16)    |   32 ms     |  42 ms  |
-| G2 (31)    |   32 ms     |  54 ms  |
-| G3 (48)    |   17 ms     | 196 ms  |
+| Graph Size | isConnected | Center  | shortestPathDist |
+|------------|-------------|---------|------------------|
+| 1000       |   653 ms    |too long |     68 ms        |
+| 10k        |   too long  |too long |     ""           |
+| 100k       |   ""        |too long |      ""          |
+| 1M         |   ""        |too long |      ""          |
+| G1 (16)    |   32 ms     |  42 ms  |     46 ms        |  
+| G2 (31)    |   32 ms     |  54 ms  |     32 ms        |
+| G3 (48)    |   17 ms     | 196 ms  |     29 ms        |
 
   
   ## External info:
