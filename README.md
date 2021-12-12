@@ -63,6 +63,19 @@ Complexity: O((|V|+|E|)log|V|), |V|=number of nodes, |E|=number of edges.
 * `resetInfo()` : private method resets the value of info in each node in the graph.
   Reset the value = change it back to default value: "White".
   
+  ## performances
+
+| Graph Size | isConnected | Center  |
+|------------|-------------|---------|
+| 1000       |   32 ms     |too long |
+| 10k        |   32 ms     |too long |
+| 100k       |   ""        |too long |
+| 1M         |   ""        |too long |
+| G1 (16)    |   32 ms     |  76 ms  |
+| G2 (31)    |   32 ms     |  54 ms  |
+| G3 (48)    |   17 ms     | 196 ms  |
+
+  
   ## External info:
 - More about graph : https://en.wikipedia.org/wiki/Directed_graph
 - More about Dijkstra's algorithm : https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
