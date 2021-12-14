@@ -1,4 +1,4 @@
-# OPP-Ex2
+# OOP-Ex2
 
 > Made by Eitan Wechsler and Asaf Yekutiel
 
