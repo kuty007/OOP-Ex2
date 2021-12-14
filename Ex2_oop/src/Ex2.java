@@ -40,7 +40,7 @@ public class Ex2 {
         try {
             if (args.length > 0) {
                 GraphAlgo graphAlgorithms = new GraphAlgo();
-                runGUI(args[0]); // with JSON
+                runGUI("data\\"+args[0]); // with JSON
             }
         } catch (Exception e) {
             e.printStackTrace();

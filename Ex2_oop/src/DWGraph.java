@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class DWGraph implements DirectedWeightedGraph {
     public static void main(String[] args) {
@@ -210,38 +212,55 @@ public class DWGraph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        final int currentChange = this.changes;
-        return new Iterator<EdgeData>() {
-            final Iterator iter = edges.values().iterator();
-            ;
-            EdgeData last = null;
+        return new Iterator<>() {
+
+            private final Iterator<HashMap<Integer, EdgeData>> it = edges.values().iterator();
+            private Iterator<EdgeData> edgeIt = null;
+            private EdgeData value = null;
+            public int counter = getMC();
 
             @Override
             public boolean hasNext() {
-                if (currentChange != changes) {
+                if (getMC() != counter) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
-                return iter.hasNext();
+                return it.hasNext() || (edgeIt == null || edgeIt.hasNext());
             }
 
             @Override
             public EdgeData next() {
-                if (currentChange != changes) {
+                if (getMC() != counter) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
-                if(hasNext())
-                last = (EdgeData) iter.next();
-                return last;
+                if (this.hasNext()) {
+                    if (edgeIt == null || !edgeIt.hasNext()) {
+                        edgeIt = it.next().values().iterator();
+                    }
+                    value = edgeIt.next();
+                    return value;
+                }
+                else throw new RuntimeException("dont have next value");
             }
 
+            @Override
             public void remove() {
-                if (currentChange != changes) {
+                if (getMC() != counter) {
                     throw new RuntimeException("The graph has changed while the iterator was running");
                 }
-                if (last != null) {
-                    removeEdge(last.getSrc(), last.getDest());
+                if (value != null) {
+                    removeEdge(value.getSrc(), value.getDest());
+                    this.counter = getMC();
                 }
-                Iterator.super.remove();
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super EdgeData> action) {
+                if (getMC() != counter) {
+                    throw new NullPointerException("The graph has changed while the iterator was running");
+                }
+                while (it.hasNext()) {
+                    action.accept(next());
+                }
             }
         };
     }

@@ -327,7 +327,16 @@ public class App extends JFrame implements ActionListener {
             idd = Integer.parseInt(Idd);
             this.origNGraph.getGraph().removeEdge(ids, idd);
             repaint();
-        } else if (e.getSource() == shortestPathDist) {
+        } if (e.getSource() == addedge) {
+            int ids, idd;
+            String Ids = JOptionPane.showInputDialog(this, "enter src node:");
+            String Idd = JOptionPane.showInputDialog(this, "enter dst node:");
+            ids = Integer.parseInt(Ids);
+            idd = Integer.parseInt(Idd);
+            this.origNGraph.getGraph().connect(ids, idd,0);
+            repaint();
+        }
+        if (e.getSource() == shortestPathDist) {
             String IdS = JOptionPane.showInputDialog(this, "enter start node id:");
             String IdF = JOptionPane.showInputDialog(this, "enter dst node id:");
             int ids = Integer.parseInt(IdS);
