@@ -23,6 +23,8 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         list.add(graph.getNode(0));
         list.add(graph.getNode(2));
         list.add(graph.getNode(5));
+        GraphAlgo gdsa;
+        gdsa = new GraphAlgo("data/in/G3.json");
         //System.out.println(tsp(list));
     }
 
@@ -30,10 +32,15 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
     public GraphAlgo() {
         this.graph = new DWGraph();
     }
+    public GraphAlgo(String path){
+        DWGraph graph = DWGraph.loadFile(path);
+        this.graph = graph;
+    }
 
 
     /**
      * Init the graph on which this set of algorithms operates.
+     *
      * @param g - a weighted graph
      */
     @Override
@@ -44,6 +51,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
 
     /**
      * Return the underlying graph of which this class works.
+     *
      * @return a directed weighted graph.
      */
     @Override
@@ -54,6 +62,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
     /**
      * Compute a deep copy of this weighted graph.
      * The method does this by using the deep copy constructor in DWGraph_DS.
+     *
      * @return identical graph.
      */
     @Override
@@ -65,6 +74,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
      * Returns true if and only if (iff) there is a valid path from each node to each
      * other node.
      * The method uses BFS algorithm.
+     *
      * @return true if strongly connected, false otherwise.
      */
     @Override
@@ -94,6 +104,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
         }
         return true;
     }
+
     //Returns the length of the shortest path between src to dest.
     @Override
     public double shortestPathDist(int src, int dest) {
@@ -127,6 +138,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
      * The method uses Dijkstra algorithm to build a List od nodes: dest --> ... -->src
      * Thus the method need to reverse the list later.
      * Complexity: O((|V|+|E|)log|V|), |V|=number of nodes, |E|=number of edges.
+     *
      * @param src  - start node
      * @param dest - end (target) node
      * @return List of nodes.
@@ -177,7 +189,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
             Double max = Double.MIN_VALUE;
             for (int j = 0; j < graph.nodeSize(); j++) {
                 if (i != j) {
-                    Double maxDis = shortestPathDist(graph.getNode(i).getKey(),graph.getNode(j).getKey());
+                    Double maxDis = shortestPathDist(graph.getNode(i).getKey(), graph.getNode(j).getKey());
                     if (maxDis > max) {
                         max = maxDis;
                     }
@@ -191,9 +203,6 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         if (cities.isEmpty()) {
-            return null;
-        }
-        if (!isConnected() && !isSubGraphConnected(cities)) {
             return null;
         }
         ArrayList<NodeData> path = new ArrayList<>();
@@ -223,6 +232,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
     /**
      * Saves this weighted (directed) graph to the given
      * file name - in JSON format
+     *
      * @param file - the file name.
      * @return true - iff the file was successfully saved.
      */
@@ -246,6 +256,7 @@ public class GraphAlgo implements DirectedWeightedGraphAlgorithms {
      * Load a graph to this graph algorithm.
      * if the file was successfully loaded - the underlying graph
      * of this class will be changed (to the loaded one), in case the
+     *
      * @param file - file name of JSON file
      * @return true - iff the graph was successfully loaded.
      */
